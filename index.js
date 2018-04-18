@@ -1,35 +1,41 @@
 'use strict';
 
-const {graphql, buildSchema} = require('graphql');
+const { graphql, buildSchema } = require('graphql');
 
 const schema = buildSchema(`
-  type Query {
-    id: ID,
-    title: String,
-    duration: Int,
-    watched: Boolean
-  }
+    type Video {
+        id: ID,
+        title: String,
+        duration: Int,
+        watched: Boolean
+    }
+    type Query {
+        video: Video
+    }
 
-  type Schema {
-      query: Query
-  }
+    type Schema {
+        query: Query
+    }
 `);
 
 const resolvers = {
-    id: () => '1',
-    title: () => 'bar',
-    duration: () => 180,
-    watched: () => true
-
+    video: () => ({
+        id: '1',
+        title: 'Foo',
+        duration: 180,
+        watched: true
+    })
 };
 
 const query = `
-    query myFirstQuery {
+query myFirstQuery {
+    video {
         id,
         title,
         duration,
         watched
     }
+}
 `;
 
 graphql(schema, query, resolvers)
