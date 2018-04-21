@@ -5,6 +5,7 @@ const graphqlHTTP = require('express-graphql');
 const {
     GraphQLSchema,
     GraphQLID,
+    GraphQLNonNull,
     GraphQLObjectType,
     GraphQLString,
     GraphQLInt,
@@ -46,7 +47,7 @@ const queryType = new GraphQLObjectType({
             type: videoType,
             args: {
                 id: {
-                    type: GraphQLID,
+                    type: new GraphQLNonNull(GraphQLID),
                     description: 'the id of the vidoe'
                 },
             },
