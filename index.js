@@ -5,6 +5,7 @@ const graphqlHTTP = require('express-graphql');
 const {
     GraphQLSchema,
     GraphQLID,
+    GraphQLInputObjectType,
     GraphQLNonNull,
     GraphQLList,
     GraphQLObjectType,
@@ -63,6 +64,24 @@ const queryType = new GraphQLObjectType({
     }
 });
 
+const videoInputType = new GraphQLInputObjectType({
+    name: 'VideoInput',
+    fields: {
+        title: {
+            type: new GraphQLNonNull(GraphQLString),
+            description: 'the title of the video'
+        },
+        duration: {
+            type: new GraphQLNonNull(GraphQLInt),
+            description: 'the duration of the video(in seconds)'
+        },
+        released: {
+            type: new GraphQLNonNull(GraphQLBoolean),
+            description: 'whether or not the video is released'
+        },
+    },
+});
+
 const mutationType = new GraphQLObjectType({
     name: 'Mutation',
     description: 'the root Mutation type',
@@ -70,21 +89,12 @@ const mutationType = new GraphQLObjectType({
         createVideo: {
             type: videoType,
             args: {
-                title: {
-                    type: new GraphQLNonNull(GraphQLString),
-                    description: 'the title of the video'
-                },
-                duration: {
-                    type: new GraphQLNonNull(GraphQLInt),
-                    description: 'the duration of the video(in seconds)'
-                },
-                released: {
-                    type: new GraphQLNonNull(GraphQLBoolean),
-                    description: 'whether or not the video is released'
+                video: {
+                    type: new GraphQLNonNull(videoInputType)
                 }
             },
             resolve: (_, args) => {
-                return createVideo(args)
+                return createVideo(args.video)
             }
         }
     }
