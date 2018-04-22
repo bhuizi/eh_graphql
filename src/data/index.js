@@ -19,9 +19,21 @@ const getVideoById = (id) => new Promise((resolve) => {
         return video.id === id;
     });
     resolve(video);
-})
+});
 
-getVideos = () => new Promise((resolve) => resolve(videos));
+const createVideo = ({title, duration, released}) => {
+    const video = {
+        id: (new Buffer(title, 'utf8').toString('base64')),
+        title,
+        duration,
+        released
+    };
+    videos.push(video);
+    return video;
+}
+
+const getVideos = () => new Promise((resolve) => resolve(videos));
 
 exports.getVideoById = getVideoById;
 exports.getVideos = getVideos;
+exports.createVideo = createVideo;

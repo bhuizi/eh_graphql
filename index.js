@@ -13,7 +13,7 @@ const {
     GraphQLBoolean,
     } = require('graphql');
 
-const {getVideoById, getVideos} = require('./src/data');
+const {getVideoById, getVideos, createVideo} = require('./src/data');
 const PORT = process.env.port || 3000;
 const server = express();
 
@@ -63,8 +63,36 @@ const queryType = new GraphQLObjectType({
     }
 });
 
+const mutationType = new GraphQLObjectType({
+    name: 'Mutation',
+    description: 'the root Mutation type',
+    fields: {
+        createVideo: {
+            type: videoType,
+            args: {
+                title: {
+                    type: new GraphQLNonNull(GraphQLString),
+                    description: 'the title of the video'
+                },
+                duration: {
+                    type: new GraphQLNonNull(GraphQLInt),
+                    description: 'the duration of the video(in seconds)'
+                },
+                released: {
+                    type: new GraphQLNonNull(GraphQLBoolean),
+                    description: 'whether or not the video is released'
+                }
+            },
+            resolve: (_, args) => {
+                return createVideo(args)
+            }
+        }
+    }
+});
+
 const schema = new GraphQLSchema({
-    query: queryType
+    query: queryType,
+    mutation: mutationType
 });
 
 server.use('/graphql', graphqlHTTP({
